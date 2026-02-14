@@ -1,0 +1,71 @@
+# Lab 9 – Port Scanning & Network Detection (Nmap)
+
+**Environments**
+- Windows 10 VM (Scanner)
+- Ubuntu 24.04 VM (Target)
+- VMware Host-Only Network
+
+---
+
+## Tasks Completed
+- Installed Nmap on Windows VM
+- Performed default Nmap scan against Ubuntu target
+- Conducted TCP SYN (stealth) scan
+- Captured scan traffic in Wireshark
+- Identified open, closed, and filtered ports
+- Enabled UFW firewall rules to modify scan results
+- Re-scanned target to observe firewall impact
+- Saved packet captures for documentation
+
+---
+
+## Observations (Default Scan)
+- Open ports detected: 22 (SSH), 53 (DNS)
+- Closed ports returned TCP RST responses
+- UDP scans returned ICMP Port Unreachable messages
+- Wireshark confirmed active probing of multiple ports
+
+---
+
+## Observations (SYN / Stealth Scan)
+- Scanner sent TCP SYN packets to target ports
+- Open ports responded with SYN-ACK
+- Windows host sent RST to avoid completing handshake
+- Closed ports responded with RST
+- Scan demonstrated half-open TCP behavior used in reconnaissance
+
+---
+
+## Observations (Firewall Enabled)
+- After blocking port 22 using UFW, SYN packets received no response
+- Wireshark showed TCP retransmissions
+- Nmap identified port 22 as "filtered"
+- Behavior confirmed firewall silently dropping packets
+
+---
+
+## Port State Analysis
+- **Open**: Service actively listening (SYN-ACK response)
+- **Closed**: Host reachable but no service (RST response)
+- **Filtered**: No response due to firewall drop
+- **ICMP Port Unreachable**: UDP port closed
+
+---
+
+## Security & Detection Insights
+- Port scanning generates detectable network patterns
+- SYN scans avoid completing full TCP handshake
+- Firewall rules directly influence port scan visibility
+- Wireshark can be used to identify reconnaissance behavior
+- Retransmissions indicate silent filtering
+- RST responses indicate explicit rejection
+
+---
+
+## Tools Used
+- Nmap
+- Wireshark
+- UFW (Uncomplicated Firewall)
+- Windows Command Prompt
+- Ubuntu 24.04 VM
+- Windows 10 VM

@@ -1,0 +1,99 @@
+# Lab 10 – UFW Firewall Configuration & Log Analysis
+
+**Environments**
+- Windows 10 VM (Scanner)
+- Ubuntu 24.04 VM (Target)
+- VMware NAT Network
+
+---
+
+## Tasks Completed
+- Verified UFW installation and status
+- Reviewed default firewall policies
+- Allowed DNS (port 53)
+- Blocked SSH (port 22)
+- Enabled logging for denied SSH traffic
+- Performed SYN scan using Nmap
+- Captured traffic in Wireshark
+- Monitored UFW logs in real time
+- Verified firewall behavior through packet analysis
+
+---
+
+## Observations (Initial Firewall Configuration)
+- Default policy: deny (incoming), allow (outgoing)
+- Port 53 configured as ALLOW
+- Port 22 configured as DENY
+- Firewall rules confirmed using `ufw status numbered`
+
+---
+
+## Observations (Nmap Scan Results)
+- 22/tcp → Filtered
+- 23/tcp → Closed
+- 53/tcp → Open
+
+Explanation:
+- Open ports responded normally
+- Closed ports returned TCP RST
+- Filtered ports produced no response
+
+---
+
+## Observations (Wireshark Capture)
+- SYN packets sent to port 22
+- No SYN-ACK returned from target
+- TCP retransmissions observed
+- ICMP Port Unreachable seen for closed ports
+- DNS traffic (port 53) showed successful communication
+
+Behavior confirmed firewall actively filtering SSH traffic.
+
+---
+
+## Observations (UFW Log Analysis)
+- Initial deny rule did not display DPT=22 entries
+- Enabled logging explicitly with:
+
+  `sudo ufw deny log 22`
+
+- Log file monitored using:
+
+  `sudo tail -f /var/log/ufw.log`
+
+- Log entries displayed:
+
+  `DPT=22`
+
+This confirmed:
+- Firewall rule matched
+- Traffic was denied
+- Logging was functioning correctly
+
+---
+
+## Port State Analysis
+- **Open**: Service responding with SYN-ACK (port 53)
+- **Closed**: Host reachable but no service (RST response)
+- **Filtered**: Firewall silently dropping packets (port 22)
+- **Retransmissions**: Indicate packet drop with no reply
+
+---
+
+## Security & Firewall Insights
+- UFW processes rules top-to-bottom
+- Firewalls are stateful and track connection states
+- Nmap “filtered” indicates silent packet drop
+- Logging must be explicitly enabled for visibility
+- Packet capture + logs provide layered verification
+- Firewall configuration directly impacts scan results
+
+---
+
+## Tools Used
+- Nmap
+- Wireshark
+- UFW (Uncomplicated Firewall)
+- Ubuntu 24.04 VM
+- Windows 10 VM
+- Windows Command Prompt
